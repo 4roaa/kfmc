@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة التصاريح والإجازات الإلكتروني</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            padding-top: 80px;
+        }
+        
+        .navbar {
+            background-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(44, 62, 80, 0.8)), url('https://images.unsplash.com/photo-1516387938699-a93567ec168e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            margin-bottom: 50px;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+        
+        .dashboard-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--secondary);
+            margin-top: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .page-content {
+            display: none;
+        }
+        
+        .active-page {
+            display: block;
+        }
+        
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 60px 0;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showPage('home')">
+                <i class="fas fa-tasks me-2"></i>
+                نظام التصاريح
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#" onclick="showPage('home')">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('permissions')">التصاريح</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('vacations')">الإجازات</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('reports')">التقارير</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('admin')">الإدارة</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" onclick="showPage('register')">التسجيل</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- الصفحة الرئيسية -->
+    <div id="home" class="page-content active-page">
+        <!-- قسم البطل -->
+        <section class="hero-section text-center">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-4">نظام إدارة التصاريح والإجازات الإلكتروني</h1>
+                <p class="lead mb-4">حل متكامل لإدارة طلبات التصاريح والإجازات بشكل إلكتروني وفعال</p>
+                <a href="#" class="btn btn-primary btn-lg me-2">تجربة النظام</a>
+                <a href="#" class="btn btn-outline-light btn-lg">معرفة المزيد</a>
+            </div>
+        </section>
+
+        <!-- إحصائيات -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-3 col-6">
+                        <div class="dashboard-card text-center p-4">
+                            <div class="stat-number">245</div>
+                            <p>طلب تصريح نشط</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="dashboard-card text-center p-4">
+                            <div class="stat-number">128</div>
+                            <p>طلب إجازة هذا الشهر</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="dashboard-card text-center p-4">
+                            <div class="stat-number">42</div>
+                            <p>طلب يحتاج مراجعة</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="dashboard-card text-center p-4">
+                            <div class="stat-number">37</div>
+                            <p>مستخدم نشط</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- الميزات -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center section-title">ميزات النظام</h2>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <h3>إنشاء الطلبات</h3>
+                            <p>إمكانية إنشاء طلبات تصاريح وإجازات جديدة بسهولة مع واجهة مستخدم بديهية</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3>عمليات CRUD</h3>
+                            <p>إدارة كاملة للبيانات مع عمليات إنشاء وقراءة وتحديث وحذف متكاملة</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-link"></i>
+                            </div>
+                            <h3>ربط البيانات</h3>
+                            <p>ربط بين البيانات المختلفة في النظام لتحسين سير العمل واتخاذ القرارات</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <h3>تقارير PDF</h3>
+                            <p>إمكانية تصدير التقارير بصيغة PDF للحفظ والطباعة والمشاركة</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-file-excel"></i>
+                            </div>
+                            <h3>تقارير Excel</h3>
+                            <p>تصدير البيانات والتقارير إلى صيغة Excel لمزيد من التحليل والمعالجة</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="feature-card card p-4 text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-desktop"></i>
+                            </div>
+                            <h3>واجهة ASP.NET</h3>
+                            <p>تصميم واجهة مستخدم متجاوبة باستخدام تقنيات ASP.NET الحديثة</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- لوحة التحكم -->
+        <section class="py-5">
+            <div class="container">
+                <h2 class="text-center section-title">لوحة التحكم</h2>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card dashboard-card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">طلبات التصاريح الحديثة</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">طلب تصريح خروج</h6>
+                                            <small>منذ ساعة</small>
+                                        </div>
+                                        <p class="mb-1">أحمد محمد - قسم التقنية</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">تصريح دخول</h6>
+                                            <small>منذ 3 ساعات</small>
+                                        </div>
+                                        <p class="mb-1">فاطمة عبدالله - قسم الموارد البشرية</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">تصريح زيارة</h6>
+                                            <small>منذ 5 ساعات</small>
+                                        </div>
+                                        <p class="mb-1">خالد سعيد - قسم المالية</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card dashboard-card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">طلبات الإجازات الحديثة</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">إجازة مرضية</h6>
+                                            <small>منذ يوم</small>
+                                        </div>
+                                        <p class="mb-1">سارة ناصر - قسم الدعم الفني</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">إجازة سنوية</h6>
+                                            <small>منذ يومين</small>
+                                        </div>
+                                        <p class="mb-1">محمد علي - قسم التطوير</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">إجازة طارئة</h6>
+                                            <small>منذ 3 أيام</small>
+                                        </div>
+                                        <p class="mb-1">لينا كمال - قسم الجودة</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- التقنيات المستخدمة -->
+        <section class="py-5 bg-light">
+            <div class="container">
+                <h2 class="text-center section-title">التقنيات المستخدمة</h2>
+                <div class="row text-center">
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fab fa-windows fa-3x mb-2 text-primary"></i>
+                        <h5>ASP.NET</h5>
+                    </div>
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fas fa-database fa-3x mb-2 text-primary"></i>
+                        <h5>SQL Server</h5>
+                    </div>
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fab fa-js-square fa-3x mb-2 text-warning"></i>
+                        <h5>JavaScript</h5>
+                    </div>
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fab fa-bootstrap fa-3x mb-2 text-purple"></i>
+                        <h5>Bootstrap</h5>
+                    </div>
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fas fa-file-pdf fa-3x mb-2 text-danger"></i>
+                        <h5>PDF Export</h5>
+                    </div>
+                    <div class="col-md-2 col-4 mb-4">
+                        <i class="fas fa-file-excel fa-3x mb-2 text-success"></i>
+                        <h5>Excel Export</h5>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- صفحة التصاريح -->
+    <div id="permissions" class="page-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="section-title text-center">إدارة التصاريح</h2>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">طلب تصريح جديد</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+                                <i class="fas fa-plus me-1"></i> إضافة طلب
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>نوع التصريح</th>
+                                            <th>التاريخ</th>
+                                            <th>الوقت</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>تصريح خروج</td>
+                                            <td>2023-10-15</td>
+                                            <td>02:00 - 04:00</td>
+                                            <td><span class="badge bg-success">مقبول</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>تصريح دخول</td>
+                                            <td>2023-10-16</td>
+                                            <td>09:00 - 10:00</td>
+                                            <td><span class="badge bg-warning">قيد المراجعة</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>تصريح زيارة</td>
+                                            <td>2023-10-17</td>
+                                            <td>11:00 - 12:00</td>
+                                            <td><span class="badge bg-danger">مرفوض</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الإجازات -->
+    <div id="vacations" class="page-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="section-title text-center">إدارة الإجازات</h2>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <div class="stat-number">21</div>
+                            <p>رصيد الإجازات السنوية</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <div class="stat-number">7</div>
+                            <p>الإجازات المستخدمة</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <div class="stat-number">14</div>
+                            <p>الإجازات المتبقية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">طلب إجازة جديدة</h5>
+                            <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addVacationModal">
+                                <i class="fas fa-plus me-1"></i> طلب إجازة
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>نوع الإجازة</th>
+                                            <th>من تاريخ</th>
+                                            <th>إلى تاريخ</th>
+                                            <th>المدة</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>إجازة سنوية</td>
+                                            <td>2023-09-01</td>
+                                            <td>2023-09-05</td>
+                                            <td>5 أيام</td>
+                                            <td><span class="badge bg-success">مقبولة</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>إجازة مرضية</td>
+                                            <td>2023-10-10</td>
+                                            <td>2023-10-12</td>
+                                            <td>3 أيام</td>
+                                            <td><span class="badge bg-warning">قيد المراجعة</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>إجازة طارئة</td>
+                                            <td>2023-10-15</td>
+                                            <td>2023-10-15</td>
+                                            <td>1 يوم</td>
+                                            <td><span class="badge bg-danger">مرفوضة</span></td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة التقارير -->
+    <div id="reports" class="page-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="section-title text-center">التقارير والإحصائيات</h2>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">تقارير التصاريح</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary mb-2">
+                                    <i class="fas fa-file-pdf me-2"></i> تصدير تقرير التصاريح PDF
+                                </button>
+                                <button class="btn btn-outline-success mb-2">
+                                    <i class="fas fa-file-excel me-2"></i> تصدير تقرير التصاريح Excel
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fas fa-chart-bar me-2"></i> عرض إحصائيات التصاريح
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">تقارير الإجازات</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary mb-2">
+                                    <i class="fas fa-file-pdf me-2"></i> تصدير تقرير الإجازات PDF
+                                </button>
+                                <button class="btn btn-outline-success mb-2">
+                                    <i class="fas fa-file-excel me-2"></i> تصدير تقرير الإجازات Excel
+                                </button>
+                                <button class="btn btn-outline-secondary">
+                                    <i class="fas fa-chart-pie me-2"></i> عرض إحصائيات الإجازات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">التقارير الشهرية</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <label for="reportMonth" class="form-label">اختر الشهر:</label>
+                                    <select class="form-select" id="reportMonth">
+                                        <option selected>يناير</option>
+                                        <option>فبراير</option>
+                                        <option>مارس</option>
+                                        <option>أبريل</option>
+                                        <option>مايو</option>
+                                        <option>يونيو</option>
+                                        <option>يوليو</option>
+                                        <option>أغسطس</option>
+                                        <option>سبتمبر</option>
+                                        <option>أكتوبر</option>
+                                        <option>نوفمبر</option>
+                                        <option>ديسمبر</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="reportYear" class="form-label">اختر السنة:</label>
+                                    <select class="form-select" id="reportYear">
+                                        <option>2023</option>
+                                        <option selected>2024</option>
+                                        <option>2025</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-download me-2"></i> تنزيل التقرير الشهري
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الإدارة -->
+    <div id="admin" class="page-content">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="section-title text-center">لوحة الإدارة</h2>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                            <h5>إدارة المستخدمين</h5>
+                            <p>إضافة، تعديل وحذف المستخدمين</p>
+                            <button class="btn btn-primary btn-sm">الدخول</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-cog fa-3x mb-3 text-primary"></i>
+                            <h5>الإعدادات</h5>
+                            <p>تعديل إعدادات النظام العامة</p>
+                            <button class="btn btn-primary btn-sm">الدخول</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-tasks fa-3x mb-3 text-primary"></i>
+                            <h5>الصلاحيات</h5>
+                            <p>إدارة صلاحيات المستخدمين</p>
+                            <button class="btn btn-primary btn-sm">الدخول</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-6 mb-4">
+                    <div class="card dashboard-card text-center">
+                        <div class="card-body">
+                            <i class="fas fa-history fa-3x mb-3 text-primary"></i>
+                            <h5>سجلات النظام</h5>
+                            <p>عرض سجلات أنشطة المستخدمين</p>
+                            <button class="btn btn-primary btn-sm">الدخول</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <div class="card dashboard-card">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">طلبات تحتاج الموافقة</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>نوع الطلب</th>
+                                            <th>اسم الموظف</th>
+                                            <th>القسم</th>
+                                            <th>التاريخ</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>إجازة سنوية</td>
+                                            <td>أحمد محمد</td>
+                                            <td>التقنية</td>
+                                            <td>2023-10-15</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2</td>
+                                            <td>تصريح خروج</td>
+                                            <td>فاطمة عبدالله</td>
+                                            <td>الموارد البشرية</td>
+                                            <td>2023-10-16</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>3</td>
+                                            <td>إجازة مرضية</td>
+                                            <td>خالد سعيد</td>
+                                            <td>المالية</td>
+                                            <td>2023-10-17</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-success"><i class="fas fa-check"></i></button>
+                                                <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة التسجيل -->
+    <div id="register" class="page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="form-container">
+                        <h2 class="section-title text-center">تسجيل مستخدم جديد</h2>
+                        
+                        <form>
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="firstName" class="form-label">الاسم الأول</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="lastName" class="form-label">اسم العائلة</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">البريد الإلكتروني</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="department" class="form-label">القسم</label>
+                                <select class="form-select" id="department" required>
+                                    <option selected disabled value="">اختر القسم...</option>
+                                    <option>التقنية</option>
+                                    <option>الموارد البشرية</option>
+                                    <option>المالية</option>
+                                    <option>التسويق</option>
+                                    <option>المبيعات</option>
+                                    <option>الدعم الفني</option>
+                                </select>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">كلمة المرور</label>
+                                    <input type="password" class="form-control" id="password" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">أوافق على الشروط والأحكام</label>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">تسجيل</button>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <p>هل لديك حساب بالفعل؟ <a href="#" onclick="showPage('login')">تسجيل الدخول</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-lg-start">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">نظام إدارة التصاريح والإجازات</h5>
+                    <p>نظام متكامل تم تطويره باستخدام أحدث التقنيات لتحسين إدارة طلبات التصاريح والإجازات في المؤسسات.</p>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">روابط سريعة</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white" onclick="showPage('home')">الرئيسية</a></li>
+                        <li><a href="#" class="text-white" onclick="showPage('permissions')">التصاريح</a></li>
+                        <li><a href="#" class="text-white" onclick="showPage('vacations')">الإجازات</a></li>
+                        <li><a href="#" class="text-white" onclick="showPage('reports')">التقارير</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">معلومات التواصل</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i> info@permission-system.com</li>
+                        <li><i class="fas fa-phone me-2"></i> +966 12 345 6789</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i> الرياض، المملكة العربية السعودية</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center p-3 mt-4" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2025 تم التطوير بواسطة: متدرب كمطور ويب كامل
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // دالة للتحويل بين الصفحات
+        function showPage(pageId) {
+            // إخفاء جميع الصفحات
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            
+            // إظهار الصفحة المطلوبة
+            document.getElementById(pageId).classList.add('active-page');
+            
+            // تحديث حالة التنقل النشط
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // إضافة active للرابط المناسب (باستثناء صفحة التسجيل)
+            if (pageId !== 'register') {
+                const activeLink = document.querySelector(`a[onclick="showPage('${pageId}')"]`);
+                if (activeLink) activeLink.classList.add('active');
+            }
+            
+            // التمرير لأعلى الصفحة
+            window.scrollTo(0, 0);
+        }
+        
+        // تهيئة أولية
+        document.addEventListener('DOMContentLoaded', function() {
+            // التأكد من أن الصفحة الرئيسية هي المعروضة عند التحميل
+            if (!document.querySelector('.page-content.active-page')) {
+                showPage('home');
+            }
+        });
+    </script>
+</body>
+</html>
